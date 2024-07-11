@@ -1,0 +1,48 @@
+1. Create a function and then call another function from within it. What is this process called?
+
+	This process is called function chaining or nested function calls. In SQL, functions can call other functions, allowing for modular and reusable code structures.
+
+2. How to inspect the query's execution plan?
+
+	EXPLAIN SELECT * FROM your_table WHERE condition;
+
+3. What is the purpose of the MAXDOP and recompiling keywords in SQL queries?
+
+	MAXDOP (Maximum Degree of Parallelism): This setting controls the number of processors that are used for the execution of a single query in SQL Server. It helps optimize query performance by limiting or expanding parallel execution.
+
+	Recompiling: In SQL Server, the RECOMPILE query hint forces the query optimizer to recompile a query plan each time it's executed, which can be useful when the data distribution or conditions change frequently.
+
+4. How to build DDL statements from an existing database table, and write steps for it?
+
+	To generate DDL (Data Definition Language) statements for an existing database table in MySQL:
+
+	Step 1: Connect to your MySQL database.
+
+	Step 2: Use the SHOW CREATE TABLE command followed by your table name. This command shows the SQL statement that creates the specified table, including indexes.
+
+		SHOW CREATE TABLE your_table_name;
+
+	Step 3: Copy the output of the SHOW CREATE TABLE command, which contains the DDL statements to create the table.
+
+5. How to update data in a table using an inner join, write an example?
+
+	UPDATE table1
+	INNER JOIN table2 ON table1.common_column = table2.common_column
+	SET table1.column_to_update = new_value
+	WHERE condition;
+
+6. Differentiate between truncate, delete, and drop with a suitable example.
+
+	Truncate: Removes all rows from a table quickly, without logging individual row deletions. It is faster than DELETE but cannot be rolled back and does not trigger ON DELETE triggers.
+
+	TRUNCATE TABLE your_table;
+
+	Delete: Removes specific rows from a table based on a condition. It is slower than TRUNCATE but allows for specifying conditions and triggers ON DELETE triggers.
+
+	DELETE FROM your_table WHERE condition;
+
+	Drop: Deletes an entire table structure along with its data, indexes, triggers, and permissions. It is not reversible.
+
+	DROP TABLE your_table;
+
+
