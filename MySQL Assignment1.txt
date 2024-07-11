@@ -1,0 +1,102 @@
+1. What is a relational database management system (RDBMS)? What are the advantages of a database management system over a file system?
+
+A Relational Database Management System (RDBMS) stores data in tables with rows and columns, and connects related data elements. 
+RDBMS is a type of Database Management System (DBMS). Compared to file systems, DBMS offers advantages like data integrity, security, and efficient data access.
+
+Data structure
+RDBMS stores data in tables with rows and columns, while file systems use file storage.
+
+Data relationships
+RDBMS stores data based on how items relate to each other, while file systems lack the ability to manage complex data relationships.
+
+Data access
+RDBMS offers efficient data access and manipulation, while file systems offer quick access to data but have limited capacity for storing large amounts of data.
+
+Data security
+RDBMS offers data security and backup features, while file systems are less secure.
+
+Data integrity
+RDBMS ensures data integrity and consistency, while file systems lack the ability to do so.
+
+Concurrency
+RDBMS supports concurrent access by multiple users, while file systems are less complex but don't support complicated transactions.
+
+Cost
+DBMS is more expensive than file systems.
+
+Complexity
+DBMS is more complex to manage than file systems. 
+
+2. In a database management system, explain the ACID properties.
+
+ACID is an acronym for the four key properties that ensure reliable execution of database transactions. The properties are Atomicity, Consistency, Isolation, and Durability. They guarantee that a set of database operations, grouped together in a transaction, leave the database in a valid state even if there are unexpected errors.
+
+Atomicity
+Ensures that all parts of a transaction are completed or none at all. It's an "all or nothing" property that treats a transaction as an indivisible unit.
+
+Consistency
+Ensures that data remains accurate and reliable. It maintains the integrity of data, ensuring it remains valid.
+
+Isolation
+Guarantees that concurrently running transactions should not interfere with each other. It means that any data being used during the processing of one transaction cannot be used by another transaction until the first transaction is complete.
+
+Durability
+Guarantees that changes made by a committed transaction must not be lost. It ensures that committed transactions are permanently stored in the database. Even in the event of system failures, the database can be recovered to a consistent state.
+
+3. Explain the concept of normalization.
+
+Normalization is the process of organizing data in a database to reduce redundancy and improve data integrity. It involves creating tables and establishing relationships between them according to rules that protect the data and make the database more flexible. Normalization is usually performed on the data model after an initial version of the tables and their relationships has been developed. 
+
+4. Explain the many types of query languages used in relational databases. DQL, DML, DCL, and DDL are some examples.
+
+Data Query Language (DQL) - Used to retrieve data from the database.
+	SELECT * FROM TableName;
+
+Data Manipulation Language (DML) - Used to manipulate data in the database (inserting, updating, deleting).
+	-- Inserting data
+		INSERT INTO TableName (Column1, Column2) VALUES (Value1, Value2);
+
+	-- Updating data
+		UPDATE TableName SET Column1 = NewValue WHERE Condition;
+
+	-- Deleting data
+		DELETE FROM TableName WHERE Condition;
+
+Data Definition Language (DDL) - Used to define the structure and schema of the database objects.
+	-- Creating a table
+		CREATE TABLE TableName (
+    		Column1 DataType,
+    		Column2 DataType,
+    		...
+		);
+
+	-- Altering a table (e.g., adding a column)
+		ALTER TABLE TableName ADD NewColumn DataType;
+
+	-- Dropping a table
+		DROP TABLE TableName;
+
+Data Control Language (DCL) - Used to control access permissions and security on database objects.
+	-- Granting privileges
+		GRANT SELECT, INSERT ON TableName TO User;
+
+	-- Revoking privileges
+		REVOKE DELETE ON TableName FROM User;
+
+5. What is the difference between the main key and a composite key? Give instances of how primary key and composite are used.
+
+Primary key
+A single column that uniquely identifies each row in a table. Primary keys can't contain null values and each table can only have one primary key. Examples include a student ID number or a vehicle identification number (VIN).
+
+Composite key
+A combination of two or more columns that uniquely identify a row in a table. Composite keys are used when a single column isn't enough to uniquely identify a row. Individual columns in a composite key can have duplicate values, but the combination of values across all columns must be unique.
+
+6. Create a table with a primary key, a column default value, and a column unique constraint in MySQL.
+
+CREATE TABLE signature
+(
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    Name VARCHAR(100) DEFAULT,
+    Email VARCHAR(255) UNIQUE
+);
+
