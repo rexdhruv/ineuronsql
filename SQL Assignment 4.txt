@@ -1,0 +1,199 @@
+Problem 1. Explain different types of views. Demonstrate with suitable examples.
+
+There are 4 types of Views:
+	1. Simple View: A view based on only a single table, which doesn't contain Group By clause and any function.
+
+	Example: 
+	CREATE VIEW view_employee_names AS
+	SELECT first_name, last_name
+	FROM employees;
+
+
+	2. Complex View: A view based on multiple tables, which contain Group By clause and functions.
+
+	Example: 
+	CREATE VIEW view_employee_details AS
+	SELECT e.employee_id, e.first_name, e.last_name, d.department_name, e.salary
+	FROM employees e
+	JOIN departments d ON e.department = d.department_id;
+
+
+	3. Inline View: A view based on a subquery in FROM Clause, that subquery creates a temperory table and simplifies the complex query.
+
+	Example: 
+	SELECT d.department_name, avg_salaries.avg_salary
+	FROM departments d
+	JOIN (
+    	SELECT department_id, AVG(salary) AS avg_salary
+    	FROM employees
+    	GROUP BY department_id
+	) AS avg_salaries
+	ON d.department_id = avg_salaries.department_id;
+
+
+	4. Materialized View: A view that stores the definition as well as data. It creates replicas of data by storing it physically.
+
+	Example: 
+	CREATE TABLE materialized_view_avg_salary (
+    	department_id INT PRIMARY KEY,
+    	avg_salary DECIMAL(10, 2)
+	);
+
+	INSERT INTO materialized_view_avg_salary (department_id, avg_salary)
+	SELECT department_id, AVG(salary) AS avg_salary
+	FROM employees
+	GROUP BY department_id;
+
+	DELIMITER //
+
+	CREATE PROCEDURE refresh_materialized_view_avg_salary()
+	BEGIN
+   	DELETE FROM materialized_view_avg_salary;
+    	INSERT INTO materialized_view_avg_salary (department_id, avg_salary)
+    	SELECT department_id, AVG(salary) AS avg_salary
+    	FROM employees
+    	GROUP BY department_id;
+	END //
+
+	DELIMITER ;
+
+Problem 2: What is the difference between function and stored procedure? Write syntax for creating functions and stored procedures.
+
+Function: 
+* Designed to perform calculations and return a single value. They are often used in SQL statements wherever expressions are allowed.
+* Must return a single value (scalar value).
+* Used in SQL statements like SELECT, INSERT, UPDATE, DELETE, and can be part of expressions.
+* Only support input parameters.
+* Should not have side effects, such as modifying data in the database.
+
+Example: 
+
+	CREATE FUNCTION calculate_area(radius DOUBLE)
+	RETURNS DOUBLE
+	DETERMINISTIC
+	BEGIN
+    		DECLARE area DOUBLE;
+    		SET area = PI() * radius * radius;
+    		RETURN area;
+	END;
+	
+	SELECT calculate_area(5);
+
+
+Stored Procedure: 
+* Designed to perform a series of operations, which may include complex business logic, and can return multiple values, including multiple result sets or output parameters.
+* Can return zero or more values, including result sets, scalar values, and output parameters.
+* Called independently using the CALL statement and cannot be used directly in SQL statements.
+* Support input, output, and input-output parameters.
+* Can have side effects, including modifying data in the database.
+
+Example: 
+
+	CREATE PROCEDURE get_avg_salary(IN department_id INT, OUT avg_salary DOUBLE)
+	BEGIN
+    		SELECT AVG(salary)
+    		INTO avg_salary
+    		FROM employees
+    		WHERE department_id = department_id;
+	END;
+
+	CALL get_avg_salary(1, @average_salary);
+	SELECT @average_salary;
+
+
+Problem 3: What is an index in SQL? What are the different types of indexes in SQL? 
+
+An index in SQL is a database object that helps users quickly find information in a table without having to read through the entire table.
+Types of Indexes in SQL:
+a) Primary Index
+b) Unique Index
+c) Clustered Index
+4) Non-Clustered Index
+5) Composite Index
+6) Filtered Index
+
+Problem 4: Showcase an example of exception handling in SQL stored procedure.
+
+Exception handling in SQL stored procedures is essential for managing errors and ensuring that procedures run smoothly.
+
+Example:
+	DELIMITER //
+
+	CREATE PROCEDURE insert_employee(
+   		IN p_employee_id INT,
+  		IN p_first_name VARCHAR(50),
+    		IN p_last_name VARCHAR(50),
+    		IN p_department_id INT
+	)
+	BEGIN
+    	DECLARE exit handler FOR SQLEXCEPTION
+    	BEGIN
+        	-- Error handling code
+        	SELECT 'An error occurred during the insert operation.';
+    		END;
+
+    		-- Insert statement
+    		INSERT INTO employees (employee_id, first_name, last_name, department_id)
+    		VALUES (p_employee_id, p_first_name, p_last_name, p_department_id);
+    
+    		-- Successful insertion message
+    			SELECT 'Employee inserted successfully.';
+	END //
+
+	DELIMITER ;
+
+Problem 5: Create a SQL function to split strings into rows on a given character? 
+              Input String: Stephen, Peter, Berry, Oliver, Caroline
+
+	DELIMITER //
+
+	CREATE FUNCTION SplitString(str VARCHAR(255), delim VARCHAR(1))
+	RETURNS TABLE (part VARCHAR(255))
+	BEGIN
+    		DECLARE i INT DEFAULT 1;
+    		DECLARE num INT DEFAULT 1;
+    		DECLARE len INT;
+    		DECLARE splitStr VARCHAR(255);
+    
+    		DROP TEMPORARY TABLE IF EXISTS tempSplitString;
+    		CREATE TEMPORARY TABLE tempSplitString (part VARCHAR(255));
+
+    		SET len = CHAR_LENGTH(str);
+    
+    	WHILE i <= len DO
+        	SET splitStr = SUBSTRING_INDEX(SUBSTRING_INDEX(str, delim, num), delim, -1);
+       	 	IF splitStr != '' THEN
+            		INSERT INTO tempSplitString VALUES (splitStr);
+        	END IF;
+        	SET i = i + CHAR_LENGTH(splitStr) + CHAR_LENGTH(delim);
+        	SET num = num + 1;
+    	END WHILE;
+
+    		RETURN tempSplitString;
+	END //
+
+	DELIMITER ;
+
+
+Problem 6: What is a temporary and a variable table? Write suitable syntax to create temporary tables and variable tables.
+
+Temperory Table: Temporary tables are tables that are created and exist only within the duration of a session or a transaction. They are automatically dropped when the session ends or the connection is closed.
+
+Syntax: 
+	CREATE TEMPORARY TABLE temp_table_name (
+    		column1 datatype [NULL | NOT NULL],
+    		column2 datatype [NULL | NOT NULL],
+    		...
+	);
+
+
+Variable Table: Variable tables are specific to T-SQL (Microsoft SQL Server) and are used to store data temporarily in a manner similar to temporary tables. However, they are scoped to the batch, stored procedure, or function in which they are declared.
+ 
+Syntax: 
+	DECLARE @table_variable_name TABLE (
+    		column1 datatype [NULL | NOT NULL],
+    		column2 datatype [NULL | NOT NULL],
+    		...
+	);
+
+
