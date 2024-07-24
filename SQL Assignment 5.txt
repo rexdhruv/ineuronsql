@@ -1,0 +1,58 @@
+Problem 1: Explain how SQL Query keyword statements are executed in order.
+
+SQL queries are executed in a specific order to ensure proper selection, sorting, filtering, grouping, and limitation of results. 
+
+The standard order of execution is:
+FROM/JOIN: Selects and joins tables to determine the relevant data.
+WHERE: Filters the joined data based on table column values.
+GROUP BY: Collapses result set fields into distinct values.
+HAVING: Used with aggregations like count() or sum().
+SELECT: Chooses the data to return.
+ORDER BY: Sorts the data to be displayed or processed based on specific columns. The default order is ascending, but DESC can be used for descending order.
+LIMIT/OFFSET: Used when iteration is involved.
+
+Problem 2: Explain the advantages of stored procedures and their syntax in relation to recompiling stored procedures.
+
+Advantages of Stored Procedures
+
+1. Improved Performance: Stored procedures are compiled once and stored in an executable form. This means that subsequent calls to the procedure are faster because the execution plan is already optimized.
+
+2. Reduced Network Traffic: By encapsulating multiple SQL statements into a single procedure, you reduce the amount of data sent over the network1.
+
+3. Enhanced Security: Stored procedures can help prevent SQL injection attacks by encapsulating the SQL logic on the server side. You can also restrict access to the underlying tables and allow users to interact with the data only through stored procedures.
+
+4. Code Reusability and Maintainability: Stored procedures promote code reuse and modularity. They can be called from different parts of an application, making maintenance easier.
+
+5. Scalability: By isolating application processing on the server, stored procedures can help improve the scalability of your application.
+
+Syntax:
+	CREATE PROCEDURE procedure_name
+	AS
+	BEGIN
+ 		-- SQL statements
+	END;
+	GO
+
+	-- To execute the stored procedure
+	EXEC procedure_name;
+
+Problem 3. Give an example of the derived table.
+
+	SELECT c.CustomerName, t.TotalAmount
+	FROM Customers c
+	JOIN (
+    		SELECT CustomerID, SUM(TotalAmount) AS TotalAmount
+    		FROM Orders
+    		GROUP BY CustomerID
+	) t ON c.CustomerID = t.CustomerID;
+
+	SELECT CustomerID, SUM(TotalAmount) AS TotalAmount
+	FROM Orders
+	GROUP BY CustomerID
+
+	SELECT c.CustomerName, t.TotalAmount
+	FROM Customers c
+	JOIN (...) t ON c.CustomerID = t.CustomerID;
+
+
+
